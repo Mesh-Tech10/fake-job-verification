@@ -168,9 +168,9 @@ def verify_company(company_name, email_domain):
 MIT License - see LICENSE file for details
 
 # Contact
-* Email: meshwapatel10@gmail.com
-LinkedIn: linkedin.com/in/meshwaa
-GitHub: github.com/Mesh-Tech10
+- Email: meshwapatel10@gmail.com
+- LinkedIn: linkedin.com/in/meshwaa
+- GitHub: github.com/Mesh-Tech10
 
 # Acknowledgments
 Thanks to the open-source community for ML libraries
