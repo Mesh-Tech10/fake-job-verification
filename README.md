@@ -18,6 +18,7 @@ An intelligent system that uses machine learning to detect and verify legitimate
 - API Integration: Company verification APIs
 
 # Project Structure
+```
 fake-job-verification/
 ├── app/
 │   ├── __init__.py
@@ -53,36 +54,36 @@ fake-job-verification/
 ├── config.py
 ├── run.py
 └── README.md
-
+```
 # Installation Steps
 1. Clone the repository
-bash
+```bash
 git clone https://github.com/yourusername/fake-job-verification.git
 cd fake-job-verification
-
+```
 2. Create virtual environment
-bash
+```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-
+```
 3. Installed dependencies
-bash
+```bash
 pip install -r requirements.txt
-
+```
 4. Set up the database
-bash
+```bash
 python setup_db.py
-
+```
 5. Train the model (optional - pre-trained model included)
-bash
+```bash
 python train_model.py
-
+```
 6. Run the application
-bash
+```bash
 python run.py
-
+```
 # API Usage
-python
+```python
 import requests
 #Verify a job posting
 response = requests.post('http://localhost:5000/api/verify', json={
@@ -96,7 +97,7 @@ response = requests.post('http://localhost:5000/api/verify', json={
 result = response.json()
 print(f"Legitimacy Score: {result['score']}")
 print(f"Risk Level: {result['risk_level']}")
-
+```
 # Machine Learning Model
 # Features Used
 - Text Analysis: Job description sentiment, keyword frequency, grammar quality
@@ -118,7 +119,7 @@ The model was trained on 50,000+ job postings with verified labels:
 
 # Key Algorithms
 1. Text Classification
-python
+```python
 #Simplified example of the main classification logic
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
@@ -132,16 +133,16 @@ def classify_job_posting(text):
     probability = model.predict_proba(tfidf_vector)
     
     return prediction[0], probability[0]
-
+```
 2. Company Verification
-python
+```python
 def verify_company(company_name, email_domain):
     #Check against registered companies database
     #Validate email domain
     #Cross-reference with business registries
     verification_score = calculate_company_score(company_name, email_domain)
     return verification_score
-
+```
 # Contributing
 1. Fork the repository
 2. Create a feature branch (git checkout -b feature/new-feature)
