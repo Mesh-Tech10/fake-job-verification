@@ -54,6 +54,7 @@ fake-job-verification/
 ├── run.py
 └── README.md
 
+# Installation Steps
 1. Clone the repository
 bash
 git clone https://github.com/yourusername/fake-job-verification.git
@@ -143,30 +144,30 @@ def verify_company(company_name, email_domain):
 
 # Contributing
 1. Fork the repository
-Create a feature branch (git checkout -b feature/new-feature)
-Commit your changes (git commit -am 'Add new feature')
-Push to the branch (git push origin feature/new-feature)
-Create a Pull Request
+2. Create a feature branch (git checkout -b feature/new-feature)
+3. Commit your changes (git commit -am 'Add new feature')
+4. Push to the branch (git push origin feature/new-feature)
+5. Create a Pull Request
 
 # Future Enhancements
- Integration with more job boards
- Mobile application
- Real-time alerts for suspicious postings
- Advanced NLP with transformer models
- Blockchain-based company verification
- Multi-language support
+ - Integration with more job boards
+ - Mobile application
+ - Real-time alerts for suspicious postings
+ - Advanced NLP with transformer models
+ - Blockchain-based company verification
+ - Multi-language support
 
 # Dataset Sources
-Public job posting datasets
-Reported fake job databases
-Company registration databases
-Salary survey data
+- Public job posting datasets
+- Reported fake job databases
+- Company registration databases
+- Salary survey data
 
 # License
 MIT License - see LICENSE file for details
 
 # Contact
-Email: meshwapatel10@gmail.com
+* Email: meshwapatel10@gmail.com
 LinkedIn: linkedin.com/in/meshwaa
 GitHub: github.com/Mesh-Tech10
 
