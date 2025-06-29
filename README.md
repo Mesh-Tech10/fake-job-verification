@@ -4,18 +4,18 @@ AI-Powered Fake Job Verification System
 An intelligent system that uses machine learning to detect and verify legitimate job postings, protecting job seekers from fraudulent listings.
 
 # Features
-**ML-based Detection:** Uses NLP and pattern recognition to identify fake job postings
-**Real-time Verification**: Instant analysis of job descriptions and company details
-**Risk Scoring**: Provides confidence scores for job legitimacy
-**Company Verification**: Cross-references with legitimate company databases
-**User Dashboard**: Clean interface for job seekers to check postings
+- ML-based Detection:** Uses NLP and pattern recognition to identify fake job postings
+- Real-time Verification**: Instant analysis of job descriptions and company details
+- Risk Scoring**: Provides confidence scores for job legitimacy
+- Company Verification**: Cross-references with legitimate company databases
+- User Dashboard**: Clean interface for job seekers to check postings
 
 # Technology Stack
-Backend: Python, Flask, scikit-learn, NLTK
-Frontend: HTML, CSS, JavaScript, Bootstrap
-Database: SQLite (development), PostgreSQL (production)
-ML Libraries: pandas, numpy, matplotlib, seaborn
-API Integration: Company verification APIs
+- Backend: Python, Flask, scikit-learn, NLTK
+- Frontend: HTML, CSS, JavaScript, Bootstrap
+- Database: SQLite (development), PostgreSQL (production)
+- ML Libraries: pandas, numpy, matplotlib, seaborn
+- API Integration: Company verification APIs
 
 # Project Structure
 fake-job-verification/
@@ -54,27 +54,36 @@ fake-job-verification/
 ├── run.py
 └── README.md
 
-Clone the repository
-bashgit clone https://github.com/yourusername/fake-job-verification.git
+1. Clone the repository
+bash
+git clone https://github.com/yourusername/fake-job-verification.git
 cd fake-job-verification
 
-Create virtual environment
-bashpython -m venv venv
+2. Create virtual environment
+bash
+python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-Installed dependencies
-bashpip install -r requirements.txt
+3. Installed dependencies
+bash
+pip install -r requirements.txt
 
-Set up the database
-bashpython setup_db.py
+4. Set up the database
+bash
+python setup_db.py
 
-Train the model (optional - pre-trained model included)
-bashpython train_model.py
+5. Train the model (optional - pre-trained model included)
+bash
+python train_model.py
 
-Run the application
-bashpython run.py
+6. Run the application
+bash
+python run.py
 
-# Verify a job posting
+# API Usage
+python
+import requests
+#Verify a job posting
 response = requests.post('http://localhost:5000/api/verify', json={
     'job_title': 'Software Engineer',
     'company': 'Tech Corp',
@@ -86,30 +95,30 @@ response = requests.post('http://localhost:5000/api/verify', json={
 result = response.json()
 print(f"Legitimacy Score: {result['score']}")
 print(f"Risk Level: {result['risk_level']}")
-Machine Learning Model
-Features Used
 
-Text Analysis: Job description sentiment, keyword frequency, grammar quality
-Company Verification: Domain validation, company registration status
-Salary Analysis: Salary range vs. market standards
-Contact Information: Email domain analysis, phone number validation
-Posting Patterns: Urgency indicators, unrealistic promises
+# Machine Learning Model
+# Features Used
+- Text Analysis: Job description sentiment, keyword frequency, grammar quality
+- Company Verification: Domain validation, company registration status
+- Salary Analysis: Salary range vs. market standards
+- Contact Information: Email domain analysis, phone number validation
+- Posting Patterns: Urgency indicators, unrealistic promises
 
 # Model Performance
-Accuracy: 94.2%
-Precision: 92.8%
-Recall: 95.1%
-F1-Score: 93.9%
+- Accuracy: 94.2%
+- Precision: 92.8%
+- Recall: 95.1%
+- F1-Score: 93.9%
 
 # Training Data
 The model was trained on 50,000+ job postings with verified labels:
-
-30,000 legitimate job postings
-20,000 identified fake postings
+- 30,000 legitimate job postings
+- 20,000 identified fake postings
 
 # Key Algorithms
 1. Text Classification
-python# Simplified example of the main classification logic
+python
+#Simplified example of the main classification logic
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 
@@ -124,15 +133,16 @@ def classify_job_posting(text):
     return prediction[0], probability[0]
 
 2. Company Verification
-pythondef verify_company(company_name, email_domain):
-    # Check against registered companies database
-    # Validate email domain
-    # Cross-reference with business registries
+python
+def verify_company(company_name, email_domain):
+    #Check against registered companies database
+    #Validate email domain
+    #Cross-reference with business registries
     verification_score = calculate_company_score(company_name, email_domain)
     return verification_score
 
 # Contributing
-Fork the repository
+1. Fork the repository
 Create a feature branch (git checkout -b feature/new-feature)
 Commit your changes (git commit -am 'Add new feature')
 Push to the branch (git push origin feature/new-feature)
