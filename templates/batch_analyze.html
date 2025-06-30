@@ -1,0 +1,81 @@
+<!-- templates/batch_analyze.html -->
+{% extends "base.html" %}
+
+{% block title %}Batch Analysis - Upload CSV File{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-upload me-2"></i>
+                        Batch Job Analysis
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Upload a CSV file containing multiple job postings for bulk analysis. 
+                        Your CSV should include columns: title, company, description, salary, location, email.
+                    </p>
+                    
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                        <div class="mb-4">
+                            <label for="file" class="form-label">Choose CSV File</label>
+                            <input type="file" class="form-control" id="file" name="file" 
+                                   accept=".csv" required>
+                            <div class="form-text">Maximum file size: 10MB</div>
+                        </div>
+                        
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>
+                                Upload and Analyze
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>CSV Format Example:</h6>
+                            <pre class="bg-light p-3 small">title,company,description,salary,location,email
+Software Engineer,Tech Corp,Great opportunity...,70000,NY,hr@tech.com
+Data Analyst,Analytics Inc,Analyze data...,60000,CA,jobs@analytics.com</pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Download Sample:</h6>
+                            <p class="text-muted">Need a sample file to test with?</p>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" onclick="downloadSample()">
+                                <i class="fas fa-download me-2"></i>
+                                Download sample_jobs.csv
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function downloadSample() {
+    const csvContent = `title,company,description,salary,location,email
+Software Engineer,Google Inc,"We are looking for a talented software engineer to join our team. You will work on cutting-edge projects and collaborate with brilliant minds. Requirements include 3+ years experience with Python/JavaScript.",120000-150000,"Mountain View, CA",careers@google.com
+Make Money Fast!!!,EasyMoney,"Make $5000 per week from home! No experience needed! Contact us now! This is a limited time offer.",5000/week,"Work from home",money@gmail.com
+Data Scientist,Microsoft,"Join our AI team to develop next-generation machine learning solutions. PhD in Computer Science preferred. Competitive salary and benefits package.",100000-140000,"Seattle, WA",jobs@microsoft.com
+URGENT Data Entry,QuickCash,"URGENT! Need people for data entry work. Pay $50/hour. No experience required! Contact immediately!",50/hour,"Remote",urgent@yahoo.com`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sample_jobs.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

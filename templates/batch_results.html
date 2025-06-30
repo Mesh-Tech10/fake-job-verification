@@ -1,0 +1,205 @@
+<!-- templates/batch_results.html -->
+{% extends "base.html" %}
+
+{% block title %}Batch Analysis Results{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Batch Analysis Complete
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+                        Successfully analyzed {{ results|length }} job postings. 
+                        Results are displayed below and have been saved to the database.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Summary Statistics -->
+            <div class="row mb-4">
+                {% set fake_count = results | selectattr('result.prediction', 'equalto', 'fake') | list | length %}
+                {% set legitimate_count = results | selectattr('result.prediction', 'equalto', 'legitimate') | list | length %}
+                
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ results|length }}</h3>
+                            <p>Total Jobs Analyzed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ legitimate_count }}</h3>
+                            <p>Legitimate Jobs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-danger">{{ fake_count }}</h3>
+                            <p>Suspicious Jobs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-table me-2"></i>
+                        Detailed Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Prediction</th>
+                                    <th>Risk Level</th>
+                                    <th>Confidence</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in results %}
+                                <tr>
+                                    <td>{{ item.job_data.title[:50] }}{% if item.job_data.title|length > 50 %}...{% endif %}</td>
+                                    <td>{{ item.job_data.company }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if item.result.prediction == 'legitimate' %}success{% else %}danger{% endif %}">
+                                            {{ item.result.prediction|title }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="risk-{{ item.result.risk_level }}">
+                                            {{ item.result.risk_level|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ "%.1f"|format(item.result.confidence * 100) }}%</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                onclick="showDetails({{ loop.index0 }})">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <a href="{{ url_for('batch_analyze') }}" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>
+                        Analyze Another File
+                    </a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-outline-secondary" onclick="exportResults()">
+                        <i class="fas fa-download me-2"></i>
+                        Export Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Job Analysis Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const resultsData = {{ results | tojson }};
+
+function showDetails(index) {
+    const item = resultsData[index];
+    const modalBody = document.getElementById('modalBody');
+    
+    let warningsHtml = '';
+    if (item.result.warnings && item.result.warnings.length > 0) {
+        warningsHtml = `
+            <div class="alert alert-warning">
+                <h6>Warnings:</h6>
+                <ul class="mb-0">
+                    ${item.result.warnings.map(w => `<li>${w}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    modalBody.innerHTML = `
+        <div class="row mb-3">
+            <div class="col-md-6"><strong>Title:</strong> ${item.job_data.title}</div>
+            <div class="col-md-6"><strong>Company:</strong> ${item.job_data.company}</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6"><strong>Prediction:</strong> 
+                <span class="badge bg-${item.result.prediction === 'legitimate' ? 'success' : 'danger'}">
+                    ${item.result.prediction}
+                </span>
+            </div>
+            <div class="col-md-6"><strong>Confidence:</strong> ${(item.result.confidence * 100).toFixed(1)}%</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6"><strong>Risk Score:</strong> ${(item.result.risk_score * 100).toFixed(1)}%</div>
+            <div class="col-md-6"><strong>Risk Level:</strong> 
+                <span class="risk-${item.result.risk_level}">${item.result.risk_level}</span>
+            </div>
+        </div>
+        ${warningsHtml}
+        <div class="mb-3">
+            <strong>Description:</strong>
+            <div class="border p-2 bg-light small">${item.job_data.description}</div>
+        </div>
+    `;
+    
+    new bootstrap.Modal(document.getElementById('detailsModal')).show();
+}
+
+function exportResults() {
+    let csvContent = "Job Title,Company,Prediction,Risk Level,Confidence,Risk Score\n";
+    
+    resultsData.forEach(item => {
+        csvContent += `"${item.job_data.title}","${item.job_data.company}","${item.result.prediction}","${item.result.risk_level}","${(item.result.confidence * 100).toFixed(1)}%","${(item.result.risk_score * 100).toFixed(1)}%"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'job_analysis_results.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}
