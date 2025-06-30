@@ -1,2 +1,11 @@
-# Auto detect text files and perform LF normalization
+# Handle line endings automatically for files detected as text
 * text=auto
+
+# Force LF for specific file types
+*.py text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+
+# Force CRLF for Windows batch files
+*.bat text eol=crlf
