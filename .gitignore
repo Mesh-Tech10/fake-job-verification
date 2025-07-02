@@ -34,3 +34,4 @@ uploads/*
 
 # Environment variables
 .env
+.vercel
