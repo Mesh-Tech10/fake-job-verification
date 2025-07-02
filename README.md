@@ -19,41 +19,25 @@ An intelligent system that uses machine learning to detect and verify legitimate
 
 # Project Structure
 ```
-fake-job-verification/
-├── app/
-│   ├── __init__.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── ml_model.py
-│   │   └── job_analyzer.py
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   └── api.py
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── index.html
-│   │   ├── verify.html
-│   │   └── results.html
-│   └── static/
-│       ├── css/
-│       ├── js/
-│       └── images/
-├── data/
-│   ├── training_data.csv
-│   ├── company_database.csv
-│   └── processed/
-├── models/
-│   ├── trained_model.pkl
-│   └── vectorizer.pkl
-├── tests/
-│   ├── test_ml_model.py
-│   ├── test_routes.py
-│   └── test_analyzer.py
-├── requirements.txt
-├── config.py
+fake-job-verification-system/
+├── app.py
 ├── run.py
-└── README.md
+├── config.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── .gitignore
+├── README.md
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   ├── analyze.html
+│   ├── results.html
+│   ├── batch_analyze.html
+│   └── batch_results.html
+├── uploads/          # Create empty folder
+├── models/           # Create empty folder
+└── logs/             # Create empty folder
 ```
 # Installation Steps
 1. Clone the repository
