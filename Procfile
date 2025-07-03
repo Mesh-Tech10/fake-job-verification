@@ -1,1 +1,1 @@
-web: python app.py
+web: python nltk_setup.py && python app.py

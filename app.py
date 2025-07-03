@@ -1,9 +1,8 @@
 # AI-Powered Fake Job Verification System
 # Complete implementation with ML models, web interface, and API
-
-# =============================================================================
+#=============================================================================
 # 1. MAIN APPLICATION (app.py)
-# =============================================================================
+#=============================================================================
 
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -14,7 +13,6 @@ import re
 import os
 from datetime import datetime
 import logging
-from textblob import TextBlob
 import requests
 from urllib.parse import urlparse
 import sqlite3
@@ -24,6 +22,49 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 import warnings
 warnings.filterwarnings('ignore')
+
+# Download NLTK data on startup
+def download_nltk_data():
+    """Download required NLTK data"""
+    try:
+        import nltk
+        import ssl
+        
+        # Handle SSL issues in some environments
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            pass
+        else:
+            ssl._create_default_https_context = _create_unverified_https_context
+        
+        # Download required data
+        nltk.download('punkt', quiet=True)
+        nltk.download('brown', quiet=True)
+        nltk.download('wordnet', quiet=True)
+        
+        # Download TextBlob corpora
+        import textblob
+        try:
+            # This will download the required corpora
+            from textblob import TextBlob
+            TextBlob("test").sentences  # This will trigger download if needed
+        except:
+            pass
+            
+        print("✅ NLTK data downloaded successfully")
+    except Exception as e:
+        print(f"⚠️  Warning: Could not download NLTK data: {e}")
+
+# Download NLTK data at startup
+download_nltk_data()
+
+# Now import TextBlob after downloading data
+try:
+    from textblob import TextBlob
+except ImportError:
+    print("⚠️  TextBlob not available, using fallback analysis")
+    TextBlob = None
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -37,16 +78,16 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# =============================================================================
+#=============================================================================
 # 2. JOB ANALYZER CLASS (job_analyzer.py)
-# =============================================================================
+#=============================================================================
 
 class JobAnalyzer:
     def __init__(self):
         self.vectorizer = None
         self.model = None
         self.load_models()
-        
+    
     def load_models(self):
         """Load pre-trained models or create new ones"""
         try:
@@ -58,7 +99,7 @@ class JobAnalyzer:
         except FileNotFoundError:
             logger.info("Models not found, will train new ones")
             self.train_model()
-    
+
     def preprocess_text(self, text):
         """Clean and preprocess job description text"""
         if not text:
@@ -80,7 +121,7 @@ class JobAnalyzer:
         text = ' '.join(text.split())
         
         return text
-    
+
     def extract_features(self, job_data):
         """Extract features from job posting data"""
         features = {}
@@ -117,12 +158,20 @@ class JobAnalyzer:
         urgency_keywords = ['urgent', 'immediate', 'asap', 'quick money', 'easy money']
         features['urgency_score'] = sum(1 for keyword in urgency_keywords if keyword in cleaned_text)
         
-        # Quality indicators
-        grammar_blob = TextBlob(description)
-        features['grammar_score'] = len(grammar_blob.sentences) / max(len(description.split()), 1)
+        # Quality indicators - with fallback if TextBlob is not available
+        if TextBlob:
+            try:
+                grammar_blob = TextBlob(description)
+                features['grammar_score'] = len(grammar_blob.sentences) / max(len(description.split()), 1)
+            except Exception as e:
+                logger.warning(f"TextBlob analysis failed: {e}")
+                features['grammar_score'] = 0.5  # Default neutral score
+        else:
+            # Simple fallback grammar score
+            features['grammar_score'] = 0.5 if description else 0
         
         return features, cleaned_text
-    
+
     def extract_salary_range(self, salary_text):
         """Extract and validate salary information"""
         if not salary_text:
@@ -138,7 +187,7 @@ class JobAnalyzer:
             else:
                 return -1  # Suspicious
         return 0
-    
+
     def validate_company_email(self, email):
         """Validate company email domain"""
         if not email or '@' not in email:
@@ -150,7 +199,7 @@ class JobAnalyzer:
         free_providers = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com']
         
         return domain not in free_providers
-    
+
     def analyze_job(self, job_data):
         """Main analysis function"""
         try:
@@ -161,17 +210,6 @@ class JobAnalyzer:
             if self.vectorizer and self.model:
                 # Vectorize text
                 text_features = self.vectorizer.transform([cleaned_text])
-                
-                # Combine with numerical features
-                numerical_features = np.array([
-                    features['text_length'],
-                    features['word_count'],
-                    features['has_salary'],
-                    features['salary_range'],
-                    features['has_company_email'],
-                    features['urgency_score'],
-                    features['grammar_score']
-                ]).reshape(1, -1)
                 
                 # Make prediction
                 prediction = self.model.predict(text_features)[0]
@@ -209,7 +247,7 @@ class JobAnalyzer:
                 'risk_level': 'high',
                 'error': str(e)
             }
-    
+
     def calculate_risk_score(self, features, job_data):
         """Calculate risk score based on various factors"""
         risk = 0.0
@@ -238,7 +276,7 @@ class JobAnalyzer:
             risk += 0.1
         
         return min(risk, 1.0)
-    
+
     def get_risk_level(self, risk_score):
         """Convert risk score to risk level"""
         if risk_score < 0.3:
@@ -247,7 +285,7 @@ class JobAnalyzer:
             return 'medium'
         else:
             return 'high'
-    
+
     def generate_warnings(self, features, job_data):
         """Generate specific warnings based on analysis"""
         warnings = []
@@ -268,7 +306,7 @@ class JobAnalyzer:
             warnings.append("No specific location provided")
         
         return warnings
-    
+
     def train_model(self):
         """Train the machine learning model with sample data"""
         logger.info("Training new model...")
@@ -311,7 +349,7 @@ class JobAnalyzer:
             pickle.dump(self.model, f)
         
         logger.info("Model training completed and saved")
-    
+
     def generate_training_data(self):
         """Generate sample training data"""
         legitimate_jobs = [
@@ -366,9 +404,9 @@ class JobAnalyzer:
         
         return legitimate_jobs + fake_jobs
 
-# =============================================================================
+#=============================================================================
 # 3. DATABASE SETUP (database.py)
-# =============================================================================
+#=============================================================================
 
 def init_database():
     """Initialize SQLite database"""
@@ -414,7 +452,7 @@ def save_job_analysis(job_data, analysis_result):
     cursor = conn.cursor()
     
     cursor.execute('''
-        INSERT INTO jobs (title, company, description, salary, location, email, 
+        INSERT INTO jobs (title, company, description, salary, location, email,
                          prediction, confidence, risk_score, risk_level)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
@@ -436,9 +474,9 @@ def save_job_analysis(job_data, analysis_result):
     
     return job_id
 
-# =============================================================================
+#=============================================================================
 # 4. FLASK ROUTES
-# =============================================================================
+#=============================================================================
 
 # Initialize the job analyzer
 analyzer = JobAnalyzer()
@@ -474,9 +512,9 @@ def analyze():
             # Save to database
             job_id = save_job_analysis(job_data, result)
             
-            return render_template('results.html', 
-                                 job_data=job_data, 
-                                 result=result, 
+            return render_template('results.html',
+                                 job_data=job_data,
+                                 result=result,
                                  job_id=job_id)
             
         except Exception as e:
@@ -530,9 +568,9 @@ def api_stats():
         
         # Get recent analyses
         cursor.execute('''
-            SELECT title, company, prediction, risk_level, created_at 
-            FROM jobs 
-            ORDER BY created_at DESC 
+            SELECT title, company, prediction, risk_level, created_at
+            FROM jobs
+            ORDER BY created_at DESC
             LIMIT 10
         ''')
         recent_jobs = cursor.fetchall()
@@ -628,9 +666,9 @@ def not_found_error(error):
 def internal_error(error):
     return render_template('500.html'), 500
 
-# =============================================================================
+#=============================================================================
 # 5. UTILITY FUNCTIONS
-# =============================================================================
+#=============================================================================
 
 def create_sample_data():
     """Create sample CSV file for testing"""
@@ -657,9 +695,9 @@ def create_sample_data():
     df.to_csv('sample_jobs.csv', index=False)
     print("Sample data created: sample_jobs.csv")
 
-# =============================================================================
+#=============================================================================
 # 6. MAIN EXECUTION
-# =============================================================================
+#=============================================================================
 
 if __name__ == '__main__':
     # Initialize database
