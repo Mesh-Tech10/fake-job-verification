@@ -35,9 +35,9 @@ fake-job-verification-system/
 │   ├── results.html
 │   ├── batch_analyze.html
 │   └── batch_results.html
-├── uploads/          # Create empty folder
-├── models/           # Create empty folder
-└── logs/             # Create empty folder
+├── uploads/          
+├── models/           
+└── logs/           
 ```
 # Installation Steps
 1. Clone the repository

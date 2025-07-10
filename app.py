@@ -1,7 +1,7 @@
 # AI-Powered Fake Job Verification System
 # Complete implementation with ML models, web interface, and API
 #=============================================================================
-# 1. MAIN APPLICATION (app.py)
+# 1. MAIN APPLICATION 
 #=============================================================================
 
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
@@ -79,7 +79,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 #=============================================================================
-# 2. JOB ANALYZER CLASS (job_analyzer.py)
+# 2. JOB ANALYZER CLASS
+# This is like the AI's brain - it makes all the smart decisions
 #=============================================================================
 
 class JobAnalyzer:
@@ -405,7 +406,7 @@ class JobAnalyzer:
         return legitimate_jobs + fake_jobs
 
 #=============================================================================
-# 3. DATABASE SETUP (database.py)
+# 3. DATABASE SETUP
 #=============================================================================
 
 def init_database():
@@ -446,6 +447,7 @@ def init_database():
     conn.commit()
     conn.close()
 
+# This remembers everything the AI has analyzed
 def save_job_analysis(job_data, analysis_result):
     """Save job analysis to database"""
     conn = sqlite3.connect('job_verification.db')
@@ -524,6 +526,7 @@ def analyze():
     
     return render_template('analyze.html')
 
+# This lets other websites talk to your AI
 @app.route('/api/analyze', methods=['POST'])
 def api_analyze():
     """API endpoint for job analysis"""
@@ -697,6 +700,7 @@ def create_sample_data():
 
 #=============================================================================
 # 6. MAIN EXECUTION
+# This starts everything up, like turning on all the lights
 #=============================================================================
 
 if __name__ == '__main__':
