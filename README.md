@@ -4,11 +4,11 @@ AI-Powered Fake Job Verification System
 An intelligent system that uses machine learning to detect and verify legitimate job postings, protecting job seekers from fraudulent listings.
 
 # Features
-- ML-based Detection:** Uses NLP and pattern recognition to identify fake job postings
-- Real-time Verification**: Instant analysis of job descriptions and company details
-- Risk Scoring**: Provides confidence scores for job legitimacy
-- Company Verification**: Cross-references with legitimate company databases
-- User Dashboard**: Clean interface for job seekers to check postings
+- ML-based Detection: Uses NLP and pattern recognition to identify fake job postings
+- Real-time Verification: Instant analysis of job descriptions and company details
+- Risk Scoring: Provides confidence scores for job legitimacy
+- Company Verification: Cross-references with legitimate company databases
+- User Dashboard: Clean interface for job seekers to check postings
 
 # Technology Stack
 - Backend: Python, Flask, scikit-learn, NLTK
