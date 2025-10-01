@@ -1,6 +1,4 @@
 # Fake Job Verification System
-AI-Powered Fake Job Verification System
-# Overview
 An intelligent system that uses machine learning to detect and verify legitimate job postings, protecting job seekers from fraudulent listings.
 
 # Features
