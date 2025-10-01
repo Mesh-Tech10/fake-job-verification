@@ -42,7 +42,7 @@ fake-job-verification-system/
 # Installation Steps
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/fake-job-verification.git
+git clone https://github.com/username/fake-job-verification.git
 cd fake-job-verification
 ```
 2. Create virtual environment
@@ -91,9 +91,9 @@ print(f"Risk Level: {result['risk_level']}")
 - Posting Patterns: Urgency indicators, unrealistic promises
 
 # Model Performance
-- Accuracy: 94.2%
-- Precision: 92.8%
-- Recall: 95.1%
+- Accuracy: 92.2%
+- Precision: 90.8%
+- Recall: 94.1%
 - F1-Score: 93.9%
 
 # Training Data
